@@ -112,9 +112,11 @@ start index.html  # على Windows
 هذا المشروع متاح للاستخدام الحر. المحتوى القانوني مبني على المعلومات الرسمية من وزارة العدل السعودية.
 
 ## 👤 المطور
-**عبدالكريم العبود**
+
 <div align="center">
 
+**عبدالكريم العبود**
+- 📧 **البريد**: abo.saleh.g@gmail.com
 
 [![Email](https://img.shields.io/badge/Email-abo.saleh.g%40gmail.com-EA4335?style=for-the-badge&logo=gmail&logoColor=white)](mailto:abo.saleh.g@gmail.com)
 [![GitHub](https://img.shields.io/badge/GitHub-abosalehg--ui-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/abosalehg-ui)
