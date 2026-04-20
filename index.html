@@ -1152,7 +1152,6 @@
     </footer>
 
     <script>
-        // Data Structure
         const lawsuitCategories = {
             general: {
                 title: 'الدعاوى العامة',
@@ -1253,10 +1252,8 @@
             }
         };
 
-        // All searchable items for search functionality
         const allSearchableItems = [];
         
-        // Populate searchable items
         Object.keys(lawsuitCategories).forEach(catKey => {
             const cat = lawsuitCategories[catKey];
             Object.keys(cat.subcategories).forEach(subCat => {
@@ -1283,7 +1280,6 @@
             });
         });
 
-        // Navigation
         document.querySelectorAll('.nav-tab').forEach(tab => {
             tab.addEventListener('click', () => {
                 document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
@@ -1292,14 +1288,12 @@
                 tab.classList.add('active');
                 document.getElementById(tab.dataset.section).classList.add('active');
                 
-                // Reset views when switching sections
                 if (tab.dataset.section === 'lawsuits') {
                     showCategories();
                 }
             });
         });
 
-        // Category Cards Click
         document.querySelectorAll('.category-card[data-category]').forEach(card => {
             card.addEventListener('click', () => {
                 showSubcategory(card.dataset.category);
@@ -1477,7 +1471,6 @@
             showCaseTypeDetails(name, subcategory, category);
         }
 
-        // Keyboard shortcut for search
         document.addEventListener('keydown', (e) => {
             if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
                 e.preventDefault();
