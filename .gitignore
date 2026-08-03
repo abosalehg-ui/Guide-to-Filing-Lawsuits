@@ -1,0 +1,15 @@
+# Dependencies (the project itself has none; this guards local tooling)
+node_modules/
+package-lock.json
+
+# Editor / OS noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Logs and local scratch
+*.log
+.cache/
+tmp/
