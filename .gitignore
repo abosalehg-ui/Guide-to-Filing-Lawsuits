@@ -1,6 +1,6 @@
 # Dependencies (the project itself has none; this guards local tooling)
 node_modules/
-package-lock.json
+# package-lock.json is committed so CI installs the exact Playwright version.
 
 # Editor / OS noise
 .DS_Store

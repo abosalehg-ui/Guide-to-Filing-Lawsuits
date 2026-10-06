@@ -11,26 +11,28 @@
     <!-- frame-ancestors is deliberately absent: browsers ignore it when the
          policy arrives via <meta>, and it only logs a console error. It needs
          an X-Frame-Options / CSP response header, which GitHub Pages cannot set. -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; img-src 'self' data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>دليل تقديم الدعاوى القضائية - نظام ناجز</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&family=Cairo:wght@600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #1B5E20;
             --primary-light: #4CAF50;
+            /* Gradient end for any background that carries white text.
+               --primary-light gives white text only 2.8:1; this gives 5.1:1. */
+            --primary-mid: #2E7D32;
             --primary-dark: #0D3311;
+            --primary-rgb: 27, 94, 32;
             --secondary: #FFC107;
-            --accent-blue: #1565C0;
-            --accent-orange: #E65100;
             --bg-cream: #FAFAF5;
             --bg-card: #FFFFFF;
             --text-primary: #1A1A1A;
             --text-secondary: #555555;
             --shadow-soft: 0 4px 20px rgba(0,0,0,0.08);
-            --shadow-hover: 0 8px 30px rgba(27,94,32,0.15);
+            --shadow-hover: 0 8px 30px rgba(var(--primary-rgb),0.15);
             --radius: 16px;
             --ease: cubic-bezier(0.4, 0, 0.2, 1);
             /* Enumerated rather than `all`, so the focus ring appears
@@ -110,7 +112,7 @@
 
         /* Header */
         .header {
-            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--primary-light) 100%);
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--primary-mid) 100%);
             padding: 2rem 1rem;
             text-align: center;
             position: relative;
@@ -201,7 +203,7 @@
         }
 
         .nav-tab:hover {
-            background: rgba(27,94,32,0.1);
+            background: rgba(var(--primary-rgb),0.1);
             color: var(--primary);
         }
 
@@ -264,7 +266,7 @@
             inset-inline-start: 0;
             width: 100px;
             height: 100px;
-            background: linear-gradient(135deg, transparent 50%, rgba(27,94,32,0.05) 50%);
+            background: linear-gradient(135deg, transparent 50%, rgba(var(--primary-rgb),0.05) 50%);
             transition: var(--transition);
         }
 
@@ -275,7 +277,7 @@
         }
 
         .category-card:hover::before {
-            background: linear-gradient(135deg, transparent 50%, rgba(27,94,32,0.1) 50%);
+            background: linear-gradient(135deg, transparent 50%, rgba(var(--primary-rgb),0.1) 50%);
         }
 
         .category-icon {
@@ -324,7 +326,8 @@
             margin-top: 2rem;
         }
 
-        .back-btn {
+        .back-btn,
+        .show-all-btn {
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
@@ -342,13 +345,36 @@
             transition: var(--transition);
         }
 
-        .back-btn:hover {
+        .back-btn:hover,
+        .show-all-btn:hover {
             background: var(--primary);
             color: white;
         }
 
+        .show-all-btn {
+            margin: 1rem 0 0;
+        }
+
+        /* Headings that receive focus programmatically after navigation. */
+        [tabindex="-1"]:focus:not(:focus-visible) {
+            outline: none;
+        }
+
+        .noscript {
+            background: white;
+            border-inline-start: 4px solid var(--secondary);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-soft);
+        }
+
+        /* Full text of every data set, built on demand for printing. */
+        .print-only {
+            display: none;
+        }
+
         .subcategory-header {
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            background: linear-gradient(135deg, var(--primary), var(--primary-mid));
             color: white;
             padding: 2rem;
             border-radius: var(--radius);
@@ -392,7 +418,7 @@
 
         .case-type-item:hover,
         .case-type-item:focus-visible {
-            background: rgba(27,94,32,0.05);
+            background: rgba(var(--primary-rgb),0.05);
             padding-inline-start: 2rem;
         }
 
@@ -457,12 +483,6 @@
             color: var(--primary);
         }
 
-        .search-hint {
-            text-align: center;
-            color: var(--text-secondary);
-            padding: 2rem;
-        }
-
         .search-count {
             margin-bottom: 1rem;
             color: var(--primary);
@@ -503,40 +523,6 @@
 
         .search-box button:hover {
             background: var(--primary-dark);
-        }
-
-        /* Electronic Services Section */
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1rem;
-        }
-
-        .service-item {
-            background: white;
-            padding: 1rem;
-            border-radius: 12px;
-            text-align: center;
-            cursor: pointer;
-            transition: var(--transition);
-            box-shadow: var(--shadow-soft);
-            border: 1px solid transparent;
-        }
-
-        .service-item:hover {
-            border-color: var(--primary-light);
-            transform: translateY(-3px);
-        }
-
-        .service-item .icon {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .service-item span {
-            display: block;
-            font-size: 0.9rem;
-            color: var(--text-primary);
         }
 
         /* Flowchart / Steps */
@@ -631,6 +617,7 @@
             max-width: 600px;
             width: 100%;
             max-height: 80vh;
+            max-height: 80dvh;
             overflow-y: auto;
             animation: modalIn 0.3s ease;
         }
@@ -734,8 +721,7 @@
             line-height: 1.7;
         }
 
-        .footer a,
-        .step-content a {
+        .footer a {
             color: var(--secondary);
         }
 
@@ -801,9 +787,6 @@
                 font-size: 1.5rem;
             }
 
-            .services-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
 
             .step {
                 gap: 0.75rem;
@@ -872,6 +855,7 @@
             .modal {
                 margin: 0.5rem;
                 max-height: 85vh;
+                max-height: 85dvh;
                 border-radius: 12px;
             }
 
@@ -921,9 +905,6 @@
                 font-size: 0.8rem;
             }
 
-            .services-grid {
-                grid-template-columns: 1fr;
-            }
         }
 
         /* Touch-friendly improvements */
@@ -933,7 +914,7 @@
             }
 
             .case-type-item:active {
-                background: rgba(27,94,32,0.1);
+                background: rgba(var(--primary-rgb),0.1);
             }
 
             .nav-tab:active {
@@ -961,48 +942,22 @@
             }
         }
 
-        /* Tooltip */
-        .tooltip {
-            position: relative;
-        }
 
-        .tooltip::after {
-            content: attr(data-tooltip);
-            position: absolute;
-            bottom: 100%;
-            inset-inline-start: 50%;
-            transform: translateX(50%);
-            background: var(--text-primary);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            white-space: nowrap;
-            opacity: 0;
-            visibility: hidden;
-            transition: var(--transition);
-        }
-
-        .tooltip:hover::after {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        /* Print styles — expand every section so the whole guide prints, not
-           just the tab that happens to be open. */
+        /* Print styles. The lists only exist in the DOM once opened, so a
+           complete copy of all three data sets is built into #print-view on
+           `beforeprint` and printed instead of the interactive sections. */
         @media print {
             .nav-container,
-            .search-container,
-            .search-results,
-            .back-btn,
             .modal-overlay,
-            .case-type-arrow {
+            #lawsuits,
+            #completions,
+            #services,
+            #search {
                 display: none !important;
             }
 
-            .section,
-            #categories-view,
-            #subcategory-view {
+            #steps,
+            .print-only {
                 display: block !important;
                 animation: none;
             }
@@ -1017,16 +972,33 @@
                 color: var(--text-primary);
             }
 
-            .category-card,
-            .case-type-list,
             .steps-container {
                 box-shadow: none;
                 border: 1px solid #ccc;
+            }
+
+            .step,
+            .print-group {
                 break-inside: avoid;
             }
 
-            .step {
-                break-inside: avoid;
+            .print-only h2 {
+                font-family: 'Cairo', sans-serif;
+                color: var(--primary);
+                margin: 2rem 0 0.5rem;
+                break-after: avoid;
+            }
+
+            .print-only h3 {
+                font-size: 1rem;
+                margin: 1rem 0 0.25rem;
+                break-after: avoid;
+            }
+
+            .print-only ul {
+                padding-inline-start: 1.5rem;
+                font-size: 0.85rem;
+                line-height: 1.6;
             }
         }
     </style>
@@ -1056,48 +1028,19 @@
 
     <!-- Main Content -->
     <main class="main-content">
+        <noscript>
+            <p class="noscript">
+                هذا الدليل يحتاج تفعيل JavaScript في المتصفح لعرض التصنيفات والبحث.
+                يمكنك الرجوع مباشرة إلى <a href="https://www.najiz.sa/" rel="noopener external">منصة ناجز الرسمية</a>.
+            </p>
+        </noscript>
+
         <!-- Lawsuits Section -->
         <section id="lawsuits" class="section active">
             <div id="categories-view">
-                <h2 class="section-title">الدعاوى القضائية</h2>
-                <div class="category-grid">
-                    <button type="button" class="category-card" data-category="general">
-                        <div class="category-icon icon-green" aria-hidden="true">⚖️</div>
-                        <h3>الدعاوى العامة</h3>
-                        <p>الدعاوى المالية، العقارية، المستعجلة، المرورية وغيرها</p>
-                        <span class="category-count" data-count-for="general"></span>
-                    </button>
-                    <button type="button" class="category-card" data-category="personal">
-                        <div class="category-icon icon-blue" aria-hidden="true">👨‍👩‍👧</div>
-                        <h3>الأحوال الشخصية</h3>
-                        <p>الزواج، الطلاق، الحضانة، النفقة، الولاية والتركات</p>
-                        <span class="category-count" data-count-for="personal"></span>
-                    </button>
-                    <button type="button" class="category-card" data-category="commercial">
-                        <div class="category-icon icon-orange" aria-hidden="true">🏢</div>
-                        <h3>الدعاوى التجارية</h3>
-                        <p>الشركات، العقود التجارية، الملكية الفكرية والأنظمة التجارية</p>
-                        <span class="category-count" data-count-for="commercial"></span>
-                    </button>
-                    <button type="button" class="category-card" data-category="execution">
-                        <div class="category-icon icon-red" aria-hidden="true">📋</div>
-                        <h3>دعاوى التنفيذ</h3>
-                        <p>الإعسار، المنازعات الشكلية وغير الشكلية</p>
-                        <span class="category-count" data-count-for="execution"></span>
-                    </button>
-                    <button type="button" class="category-card" data-category="criminal">
-                        <div class="category-icon icon-purple" aria-hidden="true">⚔️</div>
-                        <h3>الدعاوى الجزائية</h3>
-                        <p>الحق الخاص، الحدود، القصاص والمطالبات المالية</p>
-                        <span class="category-count" data-count-for="criminal"></span>
-                    </button>
-                    <button type="button" class="category-card" data-category="labor">
-                        <div class="category-icon icon-teal" aria-hidden="true">💼</div>
-                        <h3>الدعاوى العمالية</h3>
-                        <p>الحقوق الوظيفية والمالية، التعويضات والمستندات</p>
-                        <span class="category-count" data-count-for="labor"></span>
-                    </button>
-                </div>
+                <h2 class="section-title" tabindex="-1">الدعاوى القضائية</h2>
+                <!-- Cards are rendered from lawsuitCategories in data.js -->
+                <div class="category-grid" id="lawsuit-cards"></div>
             </div>
 
             <div id="subcategory-view" class="subcategory-container" hidden>
@@ -1108,7 +1051,7 @@
                     العودة للتصنيفات
                 </button>
                 <div class="subcategory-header">
-                    <h2 id="subcategory-title"></h2>
+                    <h2 id="subcategory-title" tabindex="-1"></h2>
                     <p id="subcategory-desc"></p>
                 </div>
                 <div class="case-type-list" id="case-types-list"></div>
@@ -1117,118 +1060,21 @@
 
         <!-- Completions Section -->
         <section id="completions" class="section">
-            <h2 class="section-title">الإنهاءات</h2>
-            <div class="category-grid">
-                <button type="button" class="category-card" data-completion="heirs">
-                    <div class="category-icon icon-blue" aria-hidden="true">📜</div>
-                    <h3>الورثة</h3>
-                    <p>قسمة التركات، بيان الأنصباء، إثبات الوفاة وحصر الورثة</p>
-                    <span class="category-count" data-count-for-completion="heirs"></span>
-                </button>
-                <button type="button" class="category-card" data-completion="guardianship">
-                    <div class="category-icon icon-green" aria-hidden="true">🛡️</div>
-                    <h3>الولايات</h3>
-                    <p>إقامة الولاية، فسخها، تقدير النفقة</p>
-                    <span class="category-count" data-count-for-completion="guardianship"></span>
-                </button>
-                <button type="button" class="category-card" data-completion="social">
-                    <div class="category-icon icon-purple" aria-hidden="true">💑</div>
-                    <h3>إثباتات اجتماعية</h3>
-                    <p>الزواج، الفقد والغيبة، التنازلات</p>
-                    <span class="category-count" data-count-for-completion="social"></span>
-                </button>
-                <button type="button" class="category-card" data-completion="endowments">
-                    <div class="category-icon icon-orange" aria-hidden="true">🕌</div>
-                    <h3>الأوقاف والوصايا</h3>
-                    <p>إقامة الناظر، الأذونات، التعديلات</p>
-                    <span class="category-count" data-count-for-completion="endowments"></span>
-                </button>
-                <button type="button" class="category-card" data-completion="permissions">
-                    <div class="category-icon icon-teal" aria-hidden="true">✅</div>
-                    <h3>الأذونات</h3>
-                    <p>إذن التصرف بأملاك القاصر أو المفقود أو الغائب</p>
-                    <span class="category-count" data-count-for-completion="permissions"></span>
-                </button>
-                <button type="button" class="category-card" data-completion="deeds">
-                    <div class="category-icon icon-red" aria-hidden="true">📝</div>
-                    <h3>تعديلات الصكوك</h3>
-                    <p>تعديل وتهميش على صك إنهائي</p>
-                    <span class="category-count" data-count-for-completion="deeds"></span>
-                </button>
-            </div>
+            <h2 class="section-title" tabindex="-1">الإنهاءات</h2>
+            <!-- Cards are rendered from completionData in data.js -->
+            <div class="category-grid" id="completion-cards"></div>
         </section>
 
         <!-- Electronic Services Section -->
         <section id="services" class="section">
-            <h2 class="section-title">الخدمات الإلكترونية</h2>
-
-            <div class="category-grid">
-                <button type="button" class="category-card" data-service="social-status">
-                    <div class="category-icon icon-purple" aria-hidden="true">💍</div>
-                    <h3>الحالات الاجتماعية</h3>
-                    <p>توثيق الزواج، الطلاق، الحضانة، الوصية والوقف</p>
-                    <span class="category-count" data-count-for-service="social-status"></span>
-                </button>
-                <button type="button" class="category-card" data-service="appointments">
-                    <div class="category-icon icon-blue" aria-hidden="true">📅</div>
-                    <h3>المواعيد</h3>
-                    <p>حجز المواعيد والاستعلام عنها</p>
-                    <span class="category-count" data-count-for-service="appointments"></span>
-                </button>
-                <button type="button" class="category-card" data-service="real-estate">
-                    <div class="category-icon icon-green" aria-hidden="true">🏠</div>
-                    <h3>الرهون والعقارات</h3>
-                    <p>الصكوك العقارية، الرهون، البيانات العقارية</p>
-                    <span class="category-count" data-count-for-service="real-estate"></span>
-                </button>
-                <button type="button" class="category-card" data-service="reconciliation">
-                    <div class="category-icon icon-teal" aria-hidden="true">🤝</div>
-                    <h3>المصالحة</h3>
-                    <p>تقديم طلب صلح والاستعلام عنه</p>
-                    <span class="category-count" data-count-for-service="reconciliation"></span>
-                </button>
-                <button type="button" class="category-card" data-service="verification">
-                    <div class="category-icon icon-orange" aria-hidden="true">🔍</div>
-                    <h3>خدمات التحقق</h3>
-                    <p>التحقق من الوثائق والوكالات والعقود</p>
-                    <span class="category-count" data-count-for-service="verification"></span>
-                </button>
-                <button type="button" class="category-card" data-service="judiciary">
-                    <div class="category-icon icon-red" aria-hidden="true">⚖️</div>
-                    <h3>القضاء</h3>
-                    <p>صحيفة الدعوى، الجلسات، الاعتراضات</p>
-                    <span class="category-count" data-count-for-service="judiciary"></span>
-                </button>
-                <button type="button" class="category-card" data-service="execution">
-                    <div class="category-icon icon-purple" aria-hidden="true">📋</div>
-                    <h3>التنفيذ</h3>
-                    <p>طلبات التنفيذ، الإعسار، المزادات</p>
-                    <span class="category-count" data-count-for-service="execution"></span>
-                </button>
-                <button type="button" class="category-card" data-service="licenses">
-                    <div class="category-icon icon-blue" aria-hidden="true">📄</div>
-                    <h3>التراخيص</h3>
-                    <p>تراخيص المحاماة، الموثق، مأذون الأنكحة</p>
-                    <span class="category-count" data-count-for-service="licenses"></span>
-                </button>
-                <button type="button" class="category-card" data-service="agencies">
-                    <div class="category-icon icon-green" aria-hidden="true">📑</div>
-                    <h3>الوكالات والإقرارات</h3>
-                    <p>إصدار وفسخ الوكالات، الإقرارات</p>
-                    <span class="category-count" data-count-for-service="agencies"></span>
-                </button>
-                <button type="button" class="category-card" data-service="notary">
-                    <div class="category-icon icon-orange" aria-hidden="true">🖥️</div>
-                    <h3>كتابة العدل الافتراضية</h3>
-                    <p>إصدار الوكالات وفسخها والإقرارات إلكترونياً</p>
-                    <span class="category-count" data-count-for-service="notary"></span>
-                </button>
-            </div>
+            <h2 class="section-title" tabindex="-1">الخدمات الإلكترونية</h2>
+            <!-- Cards are rendered from serviceData in data.js -->
+            <div class="category-grid" id="service-cards"></div>
         </section>
 
         <!-- Steps Section -->
         <section id="steps" class="section">
-            <h2 class="section-title">خطوات تقديم دعوى قضائية</h2>
+            <h2 class="section-title" tabindex="-1">خطوات تقديم دعوى قضائية</h2>
 
             <div class="steps-container">
                 <div class="step">
@@ -1306,7 +1152,7 @@
 
         <!-- Search Section -->
         <section id="search" class="section">
-            <h2 class="sr-only">البحث</h2>
+            <h2 class="sr-only" tabindex="-1">البحث</h2>
             <div class="search-container">
                 <label for="search-input" class="sr-only">ابحث في أنواع الدعاوى والإنهاءات والخدمات الإلكترونية</label>
                 <div class="search-box">
@@ -1314,8 +1160,14 @@
                     <button type="button" id="search-button" aria-label="بحث">🔍</button>
                 </div>
             </div>
-            <div id="search-results" class="search-results" aria-live="polite"></div>
+            <!-- Only the status line is live, so a screen reader announces the
+                 count instead of reading every result on each keystroke. -->
+            <p id="search-status" class="search-count" role="status" aria-live="polite"></p>
+            <div id="search-results" class="search-results"></div>
         </section>
+
+        <!-- Print-only copy of the whole guide, filled on beforeprint -->
+        <section id="print-view" class="print-only" aria-hidden="true"></section>
     </main>
 
     <!-- Modal -->
@@ -1341,642 +1193,7 @@
         </p>
     </footer>
 
-    <script>
-        const lawsuitCategories = {
-            general: {
-                title: 'الدعاوى العامة',
-                description: 'تشمل الدعاوى المالية والعقارية والمستعجلة والمرورية',
-                subcategories: {
-                    'أخرى': ['إثبات عقد', 'المسؤولية الناشئة عن الفعل الضار', 'رد العين', 'عقد استصناع', 'فسخ عقد أو بطلانه', 'قسمة منافع مهيأة', 'مطالبة بمستندات'],
-                    'الدعاوي المستعجلة': ['حراسة قضائية', 'منع من السفر', 'وقف الأعمال الجديدة', 'أجرة الأجير اليومية أو الأسبوعية', 'استرداد حيازة عقار', 'المعاينة لإثبات الحالة', 'منع التعرض للحيازة', 'حجز تحفظي', 'إثبات شهادة'],
-                    'عقارية': ['إخلاء عقار', 'استطراق', 'تداخل عقارات', 'حق الشفعة', 'ملكية عقار', 'قسمة عقارات مشتركة', 'مساهمة عقارية', 'مسايل أو حمى', 'مقاولات إنشاء مباني'],
-                    'مالية': ['قرض أو سلف', 'هبة في غير عقار', 'أتعاب وكلاء أو محاماة', 'أجرة أعمال', 'أجرة عقار', 'أجرة عين منقول', 'التعويض عن أضرار التقاضي', 'ثمن مبيع', 'حوالة الدين من ذمة شخص لآخر', 'شراكة في أملاك غير عقارية', 'ضمان (كفالة)', 'محاسبة وكيل', 'مطالبة الضامن للمضمون عنه', 'أرش إصابة أو دية في غير حادث مروري', 'وديعة'],
-                    'مروري': ['حق خاص ناشئ عن حادث مروري'],
-                    'الاستئناف': ['التحكيم (عامة)']
-                }
-            },
-            personal: {
-                title: 'الأحوال الشخصية',
-                description: 'تشمل دعاوى الزواج والطلاق والحضانة والنفقة والولاية والتركات',
-                subcategories: {
-                    'دعاوي الزواج والفرقة': ['إثبات طلاق', 'إثبات زواج', 'إثبات المراجعة', 'خلع', 'مهر', 'عفش الزوجية', 'فسخ عقد زواج'],
-                    'دعاوي الحضانة والزيارة والنفقة': ['أجرة رضاع أو حضانة', 'تسليم صغير لحاضنه', 'حضانة', 'رؤية صغير', 'زيادة نفقة أو إنقاصها أو إلغائها', 'زيارة أولاد أو غيرهم', 'نفقة ماضية', 'نفقة مستمرة'],
-                    'دعاوي الأوقاف والوصايا': ['إبطال وقف أو وصية', 'إثبات وقف أو وصية', 'استحقاق في وقف أو وصية', 'عزل ناظر وقف أو وصية', 'محاسبة ناظر وقف أو وصية'],
-                    'دعاوي الولاية': ['إثبات نسب أو نفيه', 'حجر أو رفعه', 'عزل ولي', 'عضل', 'محاسبة ولي'],
-                    'دعاوي قسمة التركات': ['قسمة تركة أكثر من خمسين مليون ريال', 'قسمة تركة عقارية', 'قسمة تركة مالية', 'محاسبة في تركة'],
-                    'التصنيف العام': ['إقامة حارس قضائي', 'التعويض عن أضرار التقاضي', 'أتعاب محامين أو وكلاء', 'مطالبة بمستندات', 'معارضة على صك إنهائي', 'منع من السفر', 'هبة أو رجوع عنها', 'إثبات شهادة']
-                }
-            },
-            commercial: {
-                title: 'الدعاوى التجارية',
-                description: 'تشمل دعاوى الشركات والعقود التجارية والملكية الفكرية',
-                subcategories: {
-                    'الأنظمة التجارية': ['الاستثمار الأجنبي', 'البيانات التجارية', 'التجارة البحرية', 'الامتياز التجاري', 'الرهن التجاري', 'السجل التجاري', 'مكافحة الغش التجاري', 'الأوراق التجارية', 'المنافسة غير المشروعة', 'الوكالات التجارية', 'الأسماء التجارية', 'حماية الأسرار التجارية'],
-                    'الشركات': ['شركات المضاربة', 'الشركات النظامية', 'عقد الشركة'],
-                    'الطلبات القضائية': ['أتعاب محاماة أو وكلاء', 'دعوى الضرر بين التجار', 'المعينين في القضايا التجارية', 'أوامر الأداء', 'التعويض عن مصاريف التقاضي', 'التظلم على أمر الأداء'],
-                    'العقود التجارية': ['إجارة', 'الحوالة التجارية', 'الدعاية والإعلان والتسويق', 'الكفالة التجارية', 'المقاولات', 'المكاتب والمحلات التجارية', 'النقل', 'بيع وتوريد', 'سمسرة'],
-                    'الملكية الفكرية': ['حماية حقوق المؤلف', 'براءات الاختراع', 'العلامات التجارية'],
-                    'الاستئناف': ['التحكيم (تجاري)']
-                }
-            },
-            execution: {
-                title: 'دعاوى التنفيذ',
-                description: 'تشمل دعاوى الإعسار والمنازعات المتعلقة بالتنفيذ',
-                subcategories: {
-                    'الامتناع عن قبول السند': ['الامتناع'],
-                    'دعوى الإعسار أو الملاءة': ['دعوى الإعسار', 'دعوى الملاءة'],
-                    'منازعات شكلية': ['عدم توفر شرط شكلي للسند أو تزويره أو إنكار التوقيع', 'عدم الصفة'],
-                    'منازعات غير شكلية': ['الإبراء بعد صدور السند التنفيذي', 'التأجيل بعد صدور السند التنفيذي', 'الحوالة بعد صدور السند التنفيذي', 'الصلح بعد صدور السند التنفيذي', 'المال المحجوز يفوق مقدار الدين المطالب به', 'المقاصة بموجب سند تنفيذي', 'الوفاء بعد صدور السند التنفيذي', 'امتناع شاغل العقار عن الإخلاء', 'تواطؤ أثناء المزاد', 'رد ما استوفى خطأ', 'صحة تقرير المحجوز لديه', 'عيب في العين المباعة', 'دعوى التعويض', 'المنازعة في أجرة الحارس القضائي', 'المحاصة', 'أتعاب الوكلاء والمحاماة', 'التعويض عن أضرار التقاضي']
-                }
-            },
-            criminal: {
-                title: 'الدعاوى الجزائية',
-                description: 'تشمل دعاوى الحق الخاص والحدود والقصاص والمطالبات المالية',
-                subcategories: {
-                    'الحق الخاص': ['المطالبة بالحق الخاص'],
-                    'الطلبات القضائية': ['منع من السفر', 'إثبات تنازل', 'تسليم مضبوطات', 'المعاينة لإثبات الحالة', 'إثبات شهادة', 'التظلم من أمر توقيف'],
-                    'حدود': ['قذف'],
-                    'قصاص': ['ما دون النفس', 'نفس'],
-                    'مطالبة مالية': ['أتعاب محاماة أو وكلاء', 'أرش', 'التعويض عن السجن', 'دية', 'رد العين', 'التعويض عن أضرار التقاضي']
-                }
-            },
-            labor: {
-                title: 'الدعاوى العمالية',
-                description: 'تشمل دعاوى الحقوق الوظيفية والمالية والتعويضات',
-                subcategories: {
-                    'اعتراض على قرارات': ['التأمينات الاجتماعية', 'إثبات السبب الصحيح لإنهاء العلاقة', 'إيقاع العقوبات النظامية', 'دعوى اعتراض على قرار المنشأة الإداري', 'لجان الخدمة المنزلية'],
-                    'الطلبات العارضة والعاجلة': ['منع من السفر', 'أجرة الأجير اليومية أو الأسبوعية', 'إيقاف التنفيذ', 'المعاينة لإثبات الحالة', 'حجز تحفظي', 'إثبات شهادة'],
-                    'حقوق مالية': ['مكافأة', 'أتعاب وكلاء أو محاماة', 'أجر', 'بدل', 'دفع أو استرداد رسوم', 'قيمة متلف', 'مبالغ مالية أنفقها العامل لصالح العمل', 'العمولات'],
-                    'حقوق وظيفية': ['تأمين سكن', 'توسيع مجال خدمات التأمين الصحي', 'تذاكر سفر', 'ترقية أو علاوة', 'تسكين على وظيفة أو تعديل أو مساواة في المرتبة', 'تسليم عهدة أو استرداد قرض', 'تمكين من العمل'],
-                    'تعويض': ['تكاليف العلاج', 'التعويض عن عدم التسجيل في التأمينات', 'إنهاء العلاقة العمالية من صاحب العمل', 'إنهاء العلاقة العمالية من العامل', 'عدم التزام صاحب العمل بمهلة الإشعار', 'عدم التزام العامل بمهلة الإشعار', 'التعويض عن أضرار التقاضي', 'رصيد الإجازات', 'إصابة العامل', 'عدم المنافسة وحماية الأسرار'],
-                    'مستندات ووثائق': ['نسخة من عقد العمل', 'مستندات ووثائق', 'شهادة الخدمة'],
-                    'الاستئناف': ['التحكيم (عمالي)']
-                }
-            }
-        };
-
-        const completionData = {
-            heirs: {
-                title: 'الورثة',
-                items: ['قسمة تركة بالتراضي مع وجود قاصر أو غائب أو مفقود أو وقف أو وصية', 'بيان أنصباء الورثة مع وجود قاصر أو غائب أو مفقود أو وقف أو وصية', 'إثبات وفاة أو حصر ورثة متوفي بحالات خاصة']
-            },
-            guardianship: {
-                title: 'الولايات',
-                items: ['إقامة ولاية على قاصر سناً', 'إقامة ولاية على قاصر عقلاً', 'إثبات رشد من كان قاصر عقلاً', 'فسخ ولاية بطلب من الولي', 'تقدير نفقة قاصر', 'فسخ الولاية لموت الولي', 'إقامة ولاية على مال مفقود', 'فسخ ولاية على مال مفقود', 'ولاية ورعاية وحضانة يتيم أو ذوي احتياجات خاصة']
-            },
-            social: {
-                title: 'إثباتات اجتماعية',
-                items: ['تنازل عن أرش إصابة أو دية غير العمد وشبه العمد', 'الموافقة على الزواج المبكر', 'إثبات انقطاع الأولياء عن المرأة لغرض الزواج', 'عقد زواج بولاية القاضي', 'إثبات أقرب ولي لتزويج', 'إثبات فقد وغيبة', 'إثبات تبين حال مفقود بالسلامة والحضور']
-            },
-            endowments: {
-                title: 'الأوقاف والوصايا',
-                items: ['إقامة ناظر على وقف', 'إذن تصرف بأملاك وقف أو وصية', 'تعديل وإضافة على صك الوقف أو الوصية', 'طلب المستثمر فسخ أو تعديل على عقد الاستثمار المأذون به من المحكمة', 'تسليم أموال الوقف أو الوصية المودعة لدى الهيئة', 'إقامة مشرف على وقف أو وصية', 'استقالة ناظر على وقف أو وصية', 'إثبات وقف أو وصية لمتوفي ومن ضمن الورثة غائب أو قاصر أو مفقود']
-            },
-            permissions: {
-                title: 'الأذونات',
-                items: ['إذن التصرف بأملاك القاصر أو المفقود أو الغائب']
-            },
-            deeds: {
-                title: 'تعديلات الصكوك',
-                items: ['تعديل وتهميش على صك إنهائي']
-            }
-        };
-
-        const serviceData = {
-            'social-status': {
-                title: 'الحالات الاجتماعية',
-                items: ['تصديق عقد زواج', 'توثيق الاستحقاق لتمويل الزواج', 'توثيق خلع', 'توثيق رجعة', 'توثيق زواج أحد الزوجين غير سعودي', 'توثيق زواج سابق', 'توثيق وصية', 'توثيق وقف', 'حساب المواريث', 'توثيق ورثة متوفي', 'توثيق طلاق', 'توثيق حضانة', 'إنشاء عقد زواج']
-            },
-            'appointments': {
-                title: 'المواعيد',
-                items: ['خدمة حجز المواعيد', 'حجز موعد كتابات العدل المتنقلة', 'الاستعلام عن مواعيد كتابات العدل المتنقلة', 'الاستعلام عن مواعيد المرافق العدلية']
-            },
-            'real-estate': {
-                title: 'الرهون والعقارات',
-                items: ['العقارات المملوكة', 'الرهون', 'استعلام عن الصكوك العقارية', 'تحديث وتعديل صك عقاري', 'توثيق رهن أعيان', 'إدراج صفقة (خاصة - هبة)', 'إدراج عرض حر', 'البيانات العقارية', 'الصفقات المباشرة', 'العروض العقارية', 'الوكالات العقارية', 'خدمات الموثق', 'سجل العمليات', 'عقارات مورث']
-            },
-            'reconciliation': {
-                title: 'المصالحة',
-                items: ['تقديم طلب صلح جديد إلكتروني', 'استعلام عن حالة طلب الصلح']
-            },
-            'verification': {
-                title: 'خدمات التحقق',
-                items: ['التحقق من وثيقة الحالة الاجتماعية', 'التحقق من معاملة', 'التحقق من صك حكم', 'التحقق من وكالة', 'الاستعلام عن وثيقة حصر الورثة', 'التحقق من إقرار', 'التحقق من تبليغ عدلي', 'التحقق من ترخيص عدلي', 'التحقق من رهن أعيان', 'التحقق من عقد زواج', 'التحقق من فواتير (فرجت)', 'التحقق من وثيقة عقد']
-            },
-            'judiciary': {
-                title: 'القضاء',
-                items: ['عرض تقويم الجلسات', 'صحيفة الدعوى', 'التقاضي الإلكتروني (المرافعة الكتابية)', 'الاعتراض على الحكم', 'الاطلاع على قضايا المنشأة', 'إضافة ممثل', 'التكاليف القضائية', 'التماس إعادة النظر', 'الدعاوي المستعجلة', 'طلب استمرار السير في الدعوى', 'طلب النقض', 'طلب إيداع مذكرة', 'طلب ترك الخصومة', 'طلب تصحيح الحكم أو تفسيره']
-            },
-            'execution': {
-                title: 'التنفيذ',
-                items: ['تقديم طلب تنفيذ', 'استعلام عن طلب تنفيذ', 'الإعلان عن المزادات', 'الاستعلام عن التقرير المالي', 'خدمة تأجيل تنفيذ طلب التنفيذ', 'خدمة طلب إنهاء طلب التنفيذ', 'طلب إصدار قرار (34)', 'طلب إصدار قرار (46)', 'طلب إصدار قرار إخلاء', 'طلب إصدار قرار بيع بالمزاد العلني', 'طلبات الإعسار']
-            },
-            'licenses': {
-                title: 'التراخيص',
-                items: ['طلب ترخيص موثق', 'طلب ترخيص محاماة', 'طلب ترخيص مأذون أنكحة', 'دليل المحامين الممارسين', 'طلب ترخيص مقدم خدمة تنفيذ', 'طلب تجديد ترخيص موثق', 'طلب تحديث بيانات محامي', 'طلب تسجيل محامي متدرب جديد', 'دليل مأذوني الأنكحة']
-            },
-            'agencies': {
-                title: 'الوكالات والإقرارات',
-                items: ['وكالاتي', 'الاطلاع على الإقرارات', 'إصدار وكالة متعددة الأطراف', 'إصدار وكالة فردية', 'الإقرار بالتنازل عن دين', 'الإقرار بدين', 'الإقرار بسداد دين', 'طلب تسجيل وكالة', 'إقرار بكفالة', 'نسخ وكالة', 'فسخ وكالة']
-            },
-            'notary': {
-                title: 'كتابة العدل الافتراضية',
-                items: ['إصدار وكالة من قبل مواطن', 'إصدار وكالة من قبل ممثل شركة', 'إصدار وكالة من قبل ولي على قاصر', 'إصدار وكالة من قبل ناظر على وقف', 'فسخ وكالة داخلية', 'فسخ وكالة خارجية', 'إقرار بدين', 'إقرار باستلام مبلغ مالي', 'إقرار بالتنازل']
-            }
-        };
-
-        /* -----------------------------------------------------------------
-           Search index.
-           Built from all three data sets. `serviceData` previously lived
-           inside showServiceCategory(), which is why its entries never
-           reached the index and were unsearchable.
-           ----------------------------------------------------------------- */
-        const allSearchableItems = [];
-
-        Object.keys(lawsuitCategories).forEach(catKey => {
-            const cat = lawsuitCategories[catKey];
-            Object.keys(cat.subcategories).forEach(subCat => {
-                cat.subcategories[subCat].forEach(item => {
-                    allSearchableItems.push({
-                        name: item,
-                        category: cat.title,
-                        subcategory: subCat,
-                        type: 'دعوى'
-                    });
-                });
-            });
-        });
-
-        Object.keys(completionData).forEach(key => {
-            const comp = completionData[key];
-            comp.items.forEach(item => {
-                allSearchableItems.push({
-                    name: item,
-                    category: comp.title,
-                    subcategory: 'إنهاء',
-                    type: 'إنهاء'
-                });
-            });
-        });
-
-        Object.keys(serviceData).forEach(key => {
-            const svc = serviceData[key];
-            svc.items.forEach(item => {
-                allSearchableItems.push({
-                    name: item,
-                    category: svc.title,
-                    subcategory: 'خدمة إلكترونية',
-                    type: 'خدمة'
-                });
-            });
-        });
-
-        /* -----------------------------------------------------------------
-           Arabic normalisation.
-           Hamza forms, alef maqsura and taa marbuta are written
-           inconsistently both by users and inside this file's own data, so
-           both sides of every comparison are folded to one form first.
-           ----------------------------------------------------------------- */
-        function normalizeAr(text) {
-            return text
-                .replace(/[ً-ْـ]/g, '')            // تشكيل وتطويل
-                .replace(/[أإآٱ]/g, 'ا') // أ إ آ ٱ  ->  ا
-                .replace(/ى/g, 'ي')                     // ى        ->  ي
-                .replace(/ة/g, 'ه')                     // ة        ->  ه
-                .toLowerCase();
-        }
-
-        // Normalise the haystack once at startup, not on every keystroke.
-        allSearchableItems.forEach(item => {
-            item.haystack = normalizeAr(item.name + ' ' + item.category + ' ' + item.subcategory);
-        });
-
-        /* -----------------------------------------------------------------
-           Optional per-case detail, keyed by the exact case name.
-           Deliberately empty: required documents, competent court and fees
-           for the case types in this guide need an authoritative source
-           rather than guesswork. Any entry added here renders automatically:
-             'إخلاء عقار': {
-                 court: 'المحكمة العامة',
-                 documents: ['عقد الإيجار', 'إشعار الإخلاء'],
-                 notes: '...'
-             }
-           ----------------------------------------------------------------- */
-        const caseDetails = {};
-
-        /* --- Element references --- */
-        const modalOverlay = document.getElementById('modal-overlay');
-        const modalTitle = document.getElementById('modal-title');
-        const modalBody = document.getElementById('modal-body');
-        const modalClose = document.getElementById('modal-close');
-        const searchInput = document.getElementById('search-input');
-        const searchButton = document.getElementById('search-button');
-        const searchResults = document.getElementById('search-results');
-        const categoriesView = document.getElementById('categories-view');
-        const subcategoryView = document.getElementById('subcategory-view');
-        const caseTypesList = document.getElementById('case-types-list');
-
-        /* --- Small DOM builders (textContent everywhere, never innerHTML) --- */
-        function heading(text) {
-            const p = document.createElement('p');
-            const strong = document.createElement('strong');
-            strong.textContent = text;
-            p.appendChild(strong);
-            return p;
-        }
-
-        function labelled(label, value) {
-            const p = document.createElement('p');
-            const strong = document.createElement('strong');
-            strong.textContent = label + ' ';
-            p.append(strong, document.createTextNode(value));
-            return p;
-        }
-
-        function paragraph(text) {
-            const p = document.createElement('p');
-            p.textContent = text;
-            return p;
-        }
-
-        function buildList(items) {
-            const ul = document.createElement('ul');
-            items.forEach(text => {
-                const li = document.createElement('li');
-                li.textContent = text;
-                ul.appendChild(li);
-            });
-            return ul;
-        }
-
-        function hint(text) {
-            const p = document.createElement('p');
-            p.className = 'search-hint';
-            p.textContent = text;
-            return p;
-        }
-
-        // Explicit SVG chevron: arrow glyphs such as U+2190/U+2192 carry
-        // Bidi_Mirrored, so their rendered direction inside an RTL paragraph
-        // is up to the engine. A path is not mirrored.
-        function chevronForward() {
-            const ns = 'http://www.w3.org/2000/svg';
-            const svg = document.createElementNS(ns, 'svg');
-            svg.setAttribute('viewBox', '0 0 24 24');
-            svg.setAttribute('width', '18');
-            svg.setAttribute('height', '18');
-            svg.setAttribute('aria-hidden', 'true');
-            svg.setAttribute('focusable', 'false');
-            const path = document.createElementNS(ns, 'path');
-            path.setAttribute('fill', 'currentColor');
-            path.setAttribute('d', 'M15.4 7.4 14 6l-6 6 6 6 1.4-1.4L10.8 12z');
-            svg.appendChild(path);
-            return svg;
-        }
-
-        /* --- Counts are derived from the data, never hand-written --- */
-        function countLabel(n, one, two, few, many) {
-            if (n === 1) return one;
-            if (n === 2) return two;
-            if (n <= 10) return n + ' ' + few;
-            return n + ' ' + many;
-        }
-
-        document.querySelectorAll('[data-count-for]').forEach(el => {
-            const n = Object.keys(lawsuitCategories[el.dataset.countFor].subcategories).length;
-            el.textContent = countLabel(n, 'تصنيف فرعي واحد', 'تصنيفان فرعيان', 'تصنيفات فرعية', 'تصنيفاً فرعياً');
-        });
-
-        document.querySelectorAll('[data-count-for-completion]').forEach(el => {
-            const n = completionData[el.dataset.countForCompletion].items.length;
-            el.textContent = countLabel(n, 'خدمة واحدة', 'خدمتان', 'خدمات', 'خدمة');
-        });
-
-        document.querySelectorAll('[data-count-for-service]').forEach(el => {
-            const n = serviceData[el.dataset.countForService].items.length;
-            el.textContent = countLabel(n, 'خدمة واحدة', 'خدمتان', 'خدمات', 'خدمة');
-        });
-
-        /* -----------------------------------------------------------------
-           Modal: dialog semantics, focus trap, focus restore, scroll lock.
-           ----------------------------------------------------------------- */
-        const FOCUSABLE = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
-        let lastFocused = null;
-
-        function openModal(title, content) {
-            lastFocused = document.activeElement;
-            modalTitle.textContent = title;
-            modalBody.replaceChildren(content);
-            modalOverlay.classList.add('active');
-            document.body.classList.add('modal-open');
-            modalClose.focus();
-        }
-
-        function closeModal() {
-            if (!modalOverlay.classList.contains('active')) return;
-            modalOverlay.classList.remove('active');
-            document.body.classList.remove('modal-open');
-            if (lastFocused && typeof lastFocused.focus === 'function') {
-                lastFocused.focus();
-            }
-            lastFocused = null;
-        }
-
-        modalClose.addEventListener('click', closeModal);
-
-        modalOverlay.addEventListener('click', (e) => {
-            if (e.target === modalOverlay) closeModal();
-        });
-
-        modalOverlay.addEventListener('keydown', (e) => {
-            if (e.key !== 'Tab') return;
-            const focusable = Array.from(modalOverlay.querySelectorAll(FOCUSABLE))
-                .filter(el => el.offsetParent !== null);
-            if (!focusable.length) return;
-            const first = focusable[0];
-            const last = focusable[focusable.length - 1];
-            if (e.shiftKey && document.activeElement === first) {
-                e.preventDefault();
-                last.focus();
-            } else if (!e.shiftKey && document.activeElement === last) {
-                e.preventDefault();
-                first.focus();
-            }
-        });
-
-        function openListModal(data, intro) {
-            if (!data) return;
-            const frag = document.createDocumentFragment();
-            frag.appendChild(heading(intro));
-            frag.appendChild(buildList(data.items));
-            openModal(data.title, frag);
-        }
-
-        function showCaseTypeDetails(caseName, subCategory, mainCategory) {
-            const detail = caseDetails[caseName] || {};
-            const frag = document.createDocumentFragment();
-
-            frag.appendChild(labelled('التصنيف الرئيسي:', mainCategory));
-            frag.appendChild(labelled('التصنيف الفرعي:', subCategory));
-
-            if (detail.court) {
-                frag.appendChild(labelled('المحكمة المختصة:', detail.court));
-            }
-
-            if (Array.isArray(detail.documents) && detail.documents.length) {
-                frag.appendChild(heading('المستندات المطلوبة:'));
-                frag.appendChild(buildList(detail.documents));
-            }
-
-            frag.appendChild(heading('للتقديم على هذه الدعوى:'));
-            frag.appendChild(buildList([
-                'قم بتسجيل الدخول في نظام ناجز',
-                'اختر "الخدمات القضائية" ثم "صحيفة الدعوى"',
-                'حدد التصنيف: ' + mainCategory,
-                'اختر نوع الدعوى: ' + caseName,
-                'أكمل البيانات المطلوبة وأرفق المستندات'
-            ]));
-
-            if (detail.notes) {
-                frag.appendChild(paragraph(detail.notes));
-            }
-
-            openModal(caseName, frag);
-        }
-
-        function showServiceItemDetails(item) {
-            const isCompletion = item.type === 'إنهاء';
-            const frag = document.createDocumentFragment();
-
-            frag.appendChild(labelled('القسم:', item.category));
-            frag.appendChild(labelled('النوع:', item.type));
-            frag.appendChild(heading('للوصول إلى هذه الخدمة:'));
-            frag.appendChild(buildList([
-                'قم بتسجيل الدخول في نظام ناجز',
-                isCompletion ? 'افتح قسم "الإنهاءات"' : 'افتح قسم "الخدمات الإلكترونية"',
-                'اختر الخدمة: ' + item.name,
-                'أكمل البيانات المطلوبة وأرفق المستندات'
-            ]));
-
-            openModal(item.name, frag);
-        }
-
-        function openSearchItem(item) {
-            if (item.type === 'دعوى') {
-                showCaseTypeDetails(item.name, item.subcategory, item.category);
-            } else {
-                showServiceItemDetails(item);
-            }
-        }
-
-        /* -----------------------------------------------------------------
-           Case-type rows. Real <button> elements, so keyboard activation and
-           focus come from the platform rather than being re-implemented.
-           ----------------------------------------------------------------- */
-        function buildCaseTypeRow(options) {
-            const row = document.createElement('button');
-            row.type = 'button';
-            row.className = 'case-type-item';
-
-            const number = document.createElement('span');
-            number.className = 'case-type-number';
-            number.textContent = String(options.index + 1);
-            number.setAttribute('aria-hidden', 'true');
-
-            const body = document.createElement('div');
-            body.className = 'case-type-body';
-
-            const label = document.createElement('span');
-            label.className = 'case-type-name';
-            label.textContent = options.name;
-            body.appendChild(label);
-
-            if (options.meta) {
-                const meta = document.createElement('span');
-                meta.className = 'case-type-meta';
-                meta.textContent = options.meta;
-                body.appendChild(meta);
-            }
-
-            const arrow = document.createElement('span');
-            arrow.className = 'case-type-arrow';
-            arrow.appendChild(chevronForward());
-
-            row.append(number, body, arrow);
-            row.addEventListener('click', options.onOpen);
-            return row;
-        }
-
-        function showSubcategory(categoryKey) {
-            const category = lawsuitCategories[categoryKey];
-            if (!category) {
-                showCategories();
-                return;
-            }
-
-            categoriesView.hidden = true;
-            subcategoryView.hidden = false;
-            document.getElementById('subcategory-title').textContent = category.title;
-            document.getElementById('subcategory-desc').textContent = category.description;
-
-            caseTypesList.replaceChildren();
-
-            Object.keys(category.subcategories).forEach(subCatName => {
-                const group = document.createElement('div');
-                group.className = 'case-type-group';
-                group.textContent = subCatName;
-                caseTypesList.appendChild(group);
-
-                category.subcategories[subCatName].forEach((item, index) => {
-                    caseTypesList.appendChild(buildCaseTypeRow({
-                        index: index,
-                        name: item,
-                        onOpen: function () {
-                            showCaseTypeDetails(item, subCatName, category.title);
-                        }
-                    }));
-                });
-            });
-        }
-
-        function showCategories() {
-            categoriesView.hidden = false;
-            subcategoryView.hidden = true;
-        }
-
-        /* -----------------------------------------------------------------
-           Routing. The hash is the single source of truth, so a category is
-           linkable and the browser Back button works.
-           Format:  #/services   |   #/lawsuits/general
-           The leading slash keeps the browser from scroll-jumping to the
-           element whose id matches the section name.
-           ----------------------------------------------------------------- */
-        const SECTIONS = ['lawsuits', 'completions', 'services', 'steps', 'search'];
-
-        function applyHash() {
-            const raw = location.hash.replace(/^#\/?/, '');
-            const parts = raw.split('/');
-            const section = SECTIONS.indexOf(parts[0]) !== -1 ? parts[0] : 'lawsuits';
-            const category = parts[1];
-
-            document.querySelectorAll('.nav-tab').forEach(tab => {
-                const isActive = tab.dataset.section === section;
-                tab.classList.toggle('active', isActive);
-                if (isActive) {
-                    tab.setAttribute('aria-current', 'page');
-                } else {
-                    tab.removeAttribute('aria-current');
-                }
-            });
-
-            document.querySelectorAll('.section').forEach(s => {
-                s.classList.toggle('active', s.id === section);
-            });
-
-            if (section === 'lawsuits' && category && lawsuitCategories[category]) {
-                showSubcategory(category);
-            } else {
-                showCategories();
-            }
-        }
-
-        function navigate(hash) {
-            if (location.hash !== hash) {
-                history.pushState(null, '', hash);
-            }
-            applyHash();
-        }
-
-        window.addEventListener('popstate', applyHash);
-        window.addEventListener('hashchange', applyHash);
-
-        /* --- Wiring --- */
-        document.querySelectorAll('.nav-tab').forEach(tab => {
-            tab.addEventListener('click', () => navigate('#/' + tab.dataset.section));
-        });
-
-        document.querySelectorAll('.category-card[data-category]').forEach(card => {
-            card.addEventListener('click', () => navigate('#/lawsuits/' + card.dataset.category));
-        });
-
-        document.getElementById('back-to-categories').addEventListener('click', () => {
-            navigate('#/lawsuits');
-        });
-
-        document.querySelectorAll('[data-completion]').forEach(card => {
-            card.addEventListener('click', () => {
-                openListModal(completionData[card.dataset.completion], 'الخدمات المتاحة في هذا القسم:');
-            });
-        });
-
-        document.querySelectorAll('[data-service]').forEach(card => {
-            card.addEventListener('click', () => {
-                openListModal(serviceData[card.dataset.service], 'الخدمات المتاحة:');
-            });
-        });
-
-        /* --- Search --- */
-        function performSearch() {
-            const query = normalizeAr(searchInput.value.trim());
-
-            if (query.length < 2) {
-                searchResults.replaceChildren(hint('أدخل حرفين على الأقل للبحث'));
-                return;
-            }
-
-            const results = allSearchableItems.filter(item => item.haystack.indexOf(query) !== -1);
-
-            if (!results.length) {
-                searchResults.replaceChildren(hint('لم يتم العثور على نتائج'));
-                return;
-            }
-
-            const count = document.createElement('p');
-            count.className = 'search-count';
-            count.textContent = 'تم العثور على ' + results.length + ' نتيجة';
-
-            const list = document.createElement('div');
-            list.className = 'case-type-list';
-
-            results.forEach((item, index) => {
-                list.appendChild(buildCaseTypeRow({
-                    index: index,
-                    name: item.name,
-                    meta: item.category + ' - ' + item.subcategory,
-                    onOpen: function () {
-                        openSearchItem(item);
-                    }
-                }));
-            });
-
-            searchResults.replaceChildren(count, list);
-        }
-
-        searchInput.addEventListener('input', performSearch);
-        searchButton.addEventListener('click', () => {
-            performSearch();
-            searchInput.focus();
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeModal();
-                return;
-            }
-
-            if (e.key === '/' && !modalOverlay.classList.contains('active')) {
-                const active = document.activeElement;
-                const tag = active ? active.tagName : '';
-                if (tag === 'INPUT' || tag === 'TEXTAREA' || (active && active.isContentEditable)) return;
-                e.preventDefault();
-                navigate('#/search');
-                searchInput.focus();
-            }
-        });
-
-        /* --- Initial render --- */
-        searchResults.replaceChildren(hint('أدخل حرفين على الأقل للبحث'));
-        applyHash();
-    </script>
+    <script src="data.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>

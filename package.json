@@ -1,0 +1,13 @@
+{
+  "name": "guide-to-filing-lawsuits",
+  "private": true,
+  "description": "Static Arabic guide to filing lawsuits on Najiz. The app itself has no dependencies; Playwright is only used by the browser tests.",
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test tests/*.mjs",
+    "test:e2e": "node --test tests/e2e/*.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.56.1"
+  }
+}
