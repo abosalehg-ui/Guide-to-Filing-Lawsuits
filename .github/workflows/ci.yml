@@ -11,16 +11,26 @@ permissions:
 
 jobs:
   test:
-    name: Data and markup checks
+    name: Data, markup and browser tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      # Third-party actions are pinned to a commit, not a movable tag.
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: '20'
+          cache: npm
 
-      # No dependencies to install: the project is a single static file and the
-      # tests use only node:test, node:assert and node:vm.
-      - name: Run tests
-        run: node --test tests/*.mjs
+      # Dependency-free: node:test, node:assert and node:vm only.
+      - name: Data and markup tests
+        run: npm test
+
+      # Playwright is a dev dependency of the tests only; the app has none.
+      - name: Install Playwright
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+
+      - name: Browser tests
+        run: npm run test:e2e
